@@ -4,9 +4,10 @@ var util = require("util");
 var events = require("events");
 
 exports.createInterface = function (options) {
-  document.body.innerHTML +=
-  '<style>'
-    + '#_readline_autocomplete {'
+  var styleElem = document.createElement("style");
+
+  styleElem.innerHTML =
+  '#_readline_autocomplete {'
     + 'display: none;'
     + 'position: fixed;'
     + 'padding: 5px;'
@@ -19,8 +20,8 @@ exports.createInterface = function (options) {
     + '#_readline_autocomplete .selected {'
     + 'color: #fff;'
     + 'background-color: #00f;'
-    + '}'
-    + '</style>';
+    + '}';
+  document.body.appendChild(styleElem);
   return new ReadLineInterface(options);
 };
 
