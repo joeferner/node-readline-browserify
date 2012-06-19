@@ -18,6 +18,7 @@ npm install readline-browserify
 
 <script>
   var readline = require("readline");
+
   var rl = readline.createInterface({
     elementId: 'commandLine',
 
@@ -40,7 +41,25 @@ npm install readline-browserify
       callback(null, [matches, linePartial]);
     }
   });
+
   rl.setPrompt('browserify> ');
   rl.prompt();
+  rl.on('line', function (line) {
+      switch (line.trim()) {
+      case 'command1':
+        rl.write('ok command1');
+        break;
+      case 'command2':
+        rl.write('ok command2');
+        break;
+      case 'test':
+        rl.write('ok test');
+        break;
+      default:
+        rl.write('Say what? I might have heard `' + line.trim() + '`');
+        break;
+      }
+      rl.prompt();
+    });
 </script>
 ```
