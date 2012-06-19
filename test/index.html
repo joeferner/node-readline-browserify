@@ -1,0 +1,60 @@
+<html>
+<head>
+  <script type="text/javascript" src="/browserify.js"></script>
+  <style type="text/css">
+    #commandLine {
+    }
+
+    .prompt {
+      color: #888;
+      font-size: 12px;
+      font-family: Menlo, "monospace";
+    }
+
+    #commandLineOutput {
+      font-size: 12px;
+      font-family: Menlo, "monospace";
+    }
+
+    #commandLine input {
+      outline: none;
+      border: 0;
+      color: #333;
+      font-weight: bold;
+      font-size: 12px;
+      font-family: Menlo, "monospace";
+    }
+  </style>
+</head>
+<body>
+<div id="commandLineOutput"></div>
+<div id="commandLine"></div>
+<br>
+<button onclick="readlinePause()">Pause</button>
+<button onclick="readlineResume()">Resume</button>
+<script>
+  var test = require("/test/entry.js").test;
+
+  var rl = test.run({
+    elementId: 'commandLine',
+    write: write
+  });
+
+  function write(line) {
+    var output = document.getElementById('commandLineOutput');
+    if (output.innerHTML.length > 0) {
+      output.innerHTML += "<br>";
+    }
+    output.innerHTML += line;
+  }
+
+  function readlinePause() {
+    rl.pause();
+  }
+
+  function readlineResume() {
+    rl.resume();
+  }
+</script>
+</body>
+</html>

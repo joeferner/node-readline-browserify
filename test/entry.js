@@ -1,0 +1,2 @@
+
+exports.test = require('./test');

@@ -1,0 +1,18 @@
+{
+  "author": "Joe Ferner <joe@fernsroth.com>",
+  "name": "readline-browserify",
+  "description": "Readline implementation for browserify.",
+  "version": "0.0.1",
+  "repository": {
+    "url": ""
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "node test/simple.js"
+  }
+}

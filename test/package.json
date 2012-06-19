@@ -1,0 +1,17 @@
+{
+  "author": "",
+  "name": "readline-browserify-test",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "dependencies": {
+    "browserify": "~1.12.2",
+    "connect": "~2.3.3"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
