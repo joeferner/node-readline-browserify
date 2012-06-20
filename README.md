@@ -12,6 +12,8 @@ npm install readline-browserify
 
 # Usage
 
+Copy the css from default.css into your css file.
+
 ```html
 <div id="commandLineOutput"></div>
 <div id="commandLine"></div>

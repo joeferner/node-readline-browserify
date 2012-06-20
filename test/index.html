@@ -2,6 +2,7 @@
 <head>
   <script type="text/javascript" src="/browserify.js"></script>
   <style type="text/css">
+
     #commandLine {
     }
 
@@ -24,16 +25,32 @@
       font-size: 12px;
       font-family: Menlo, "monospace";
     }
+
+    .autocompletePopup {
+      padding: 5px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+    }
+
+    .autocompletePopup div {
+      padding: 5px;
+    }
+
+    .autocompletePopup .selected {
+      color: #fff;
+      background-color: #00f;
+    }
   </style>
 </head>
 <body>
+<br><br><br><br><br>
 <div id="commandLineOutput"></div>
 <div id="commandLine"></div>
 <br>
 <button onclick="readlinePause()">Pause</button>
 <button onclick="readlineResume()">Resume</button>
 <script>
-  var test = require("/entry.js").test;
+  var test = require("./test/entry.js").test;
 
   var rl = test.run({
     elementId: 'commandLine',

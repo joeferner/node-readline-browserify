@@ -1,0 +1,37 @@
+.prompt {
+    color: #888;
+    font-size: 12px;
+    font-family: Menlo, "monospace";
+}
+
+#commandLineOutput {
+    font-size: 12px;
+    font-family: Menlo, "monospace";
+}
+
+#commandLine {
+}
+
+#commandLine input {
+    outline: none;
+    border: 0;
+    color: #333;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: Menlo, "monospace";
+}
+
+.autocompletePopup {
+    padding: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.autocompletePopup div {
+    padding: 5px;
+}
+
+.autocompletePopup .selected {
+    color: #fff;
+    background-color: #00f;
+}

@@ -4,24 +4,6 @@ var util = require("util");
 var events = require("events");
 
 exports.createInterface = function (options) {
-  var styleElem = document.createElement("style");
-
-  styleElem.innerHTML =
-  '#_readline_autocomplete {'
-    + 'display: none;'
-    + 'position: fixed;'
-    + 'padding: 5px;'
-    + 'border: 1px solid #ddd;'
-    + 'background-color: #fff;'
-    + '}'
-    + '#_readline_autocomplete div {'
-    + 'padding: 5px;'
-    + '}'
-    + '#_readline_autocomplete .selected {'
-    + 'color: #fff;'
-    + 'background-color: #00f;'
-    + '}';
-  document.body.appendChild(styleElem);
   return new ReadLineInterface(options);
 };
 
@@ -41,7 +23,7 @@ ReadLineInterface.prototype.prompt = function (preserveCursor) {
   '<form id="_readline_cliForm">'
     + '<span class="prompt">' + this._prompt + '</span>'
     + '<input id="_readline_input" autocomplete="off" spellcheck="false" type="text">'
-    + '<div class="autocomplete" id="_readline_autocomplete"></div>'
+    + '<div class="autocompletePopup" id="_readline_autocomplete" style="display: none; position: fixed;"></div>'
     + '</form>';
 
   var form = document.getElementById('_readline_cliForm');

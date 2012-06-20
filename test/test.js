@@ -1,6 +1,7 @@
 'use strict';
 
-var readline = require('readline');
+var readline = require('../');
+//var readline = require('readline');
 
 exports.run = function (options) {
   options = options || {};
