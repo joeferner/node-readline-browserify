@@ -105,12 +105,12 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
   autocomplete.innerHTML = html;
   var inputLoc = getOffset(input);
   autocomplete.style.left = inputLoc.left;
-  autocomplete.style.top = inputLoc.top + input.offsetHeight;
+  autocomplete.style.top = (inputLoc.top + input.offsetHeight) + 'px';
   autocomplete.style.display = 'block';
   if (inputLoc.top + autocomplete.offsetHeight > window.pageYOffset + window.innerHeight) {
     var y = inputLoc.top - autocomplete.offsetHeight;
     if (y > 0) {
-      autocomplete.style.top = y;
+      autocomplete.style.top = y + 'px';
     }
   }
 };
