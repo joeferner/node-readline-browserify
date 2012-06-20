@@ -125,6 +125,12 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
   autocomplete.style.left = inputLoc.left;
   autocomplete.style.top = inputLoc.top + input.offsetHeight;
   autocomplete.style.display = 'block';
+  if (inputLoc.top + autocomplete.offsetHeight > window.pageYOffset + window.innerHeight) {
+    var y = inputLoc.top - autocomplete.offsetHeight;
+    if (y > 0) {
+      autocomplete.style.top = y;
+    }
+  }
 };
 
 ReadLineInterface.prototype.getAutoCompleteValue = function (idx) {
