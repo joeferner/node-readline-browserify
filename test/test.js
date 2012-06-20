@@ -6,6 +6,10 @@ var readline = require('../');
 exports.run = function (options) {
   options = options || {};
   options.completer = function (linePartial, callback) {
+    var lastSpace = linePartial.lastIndexOf(' ');
+    if (lastSpace >= 0) {
+      linePartial = linePartial.substr(lastSpace + 1);
+    }
     var cmds = ['command1', 'command2', 'test'];
     var matches = [];
     cmds.forEach(function (cmd) {

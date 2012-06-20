@@ -56,7 +56,7 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
           var matches = matchArray[0];
           self.lastLinePartial = matchArray[1];
           if (matches.length === 1) {
-            input.value = matches[0];
+            input.value = input.value.replace(new RegExp(self.lastLinePartial + '$'), matches[0]);
           } else if (matches.length > 1) {
             self._showAutoComplete(input, matches);
           }
