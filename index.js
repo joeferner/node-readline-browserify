@@ -58,7 +58,6 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
         this._updateValueWithCompletion(input, self.lastLinePartial, value);
         this._hideAutoComplete();
       }
-      return preventDefault(e);
     } else {
       if (this._options.completer) {
         this._options.completer(input.value, function (err, matchArray) {
@@ -70,9 +69,9 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
             self._showAutoComplete(input, matches);
           }
         });
-        return preventDefault(e);
       }
     }
+    return preventDefault(e);
   } else if (e.keyCode == DOWN) {
     count = this.getAutoCompleteCount();
     idx = this.getSelectedAutoCompleteItemIndex() + 1;
