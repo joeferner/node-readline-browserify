@@ -61,6 +61,9 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     } else {
       if (this._options.completer) {
         this._options.completer(input.value, function (err, matchArray) {
+          if (!matchArray) {
+            return;
+          }
           var matches = matchArray[0];
           self.lastLinePartial = matchArray[1];
           if (matches.length === 1) {
