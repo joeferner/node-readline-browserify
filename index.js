@@ -104,7 +104,7 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
   var autocomplete = document.getElementById('_readline_autocomplete');
   var html = '';
   matches.forEach(function (match) {
-    html += '<div>' + match + "</div>";
+    html += '<div data-value="' + match + '">' + match + "</div>";
   });
   autocomplete.innerHTML = html;
   var inputLoc = getOffset(input);
@@ -125,7 +125,7 @@ ReadLineInterface.prototype.getAutoCompleteValue = function (idx) {
     return null;
   }
   var autocomplete = document.getElementById('_readline_autocomplete');
-  return autocomplete.children[idx].innerText;
+  return autocomplete.children[idx].getAttribute('data-value');
 };
 
 ReadLineInterface.prototype.getAutoCompleteCount = function () {
