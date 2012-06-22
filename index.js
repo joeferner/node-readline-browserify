@@ -46,7 +46,7 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     if (this._isAutoCompleteVisible()) {
       var value = this.getAutoCompleteValue();
       if (value) {
-        input.value = input.value.replace(new RegExp(self.lastLinePartial + '$'), value);
+        this._updateValueWithCompletion(input, self.lastLinePartial, value);
         this._hideAutoComplete();
       }
       return preventDefault(e);
@@ -56,7 +56,7 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
           var matches = matchArray[0];
           self.lastLinePartial = matchArray[1];
           if (matches.length === 1) {
-            input.value = input.value.replace(new RegExp(self.lastLinePartial + '$'), matches[0]);
+            self._updateValueWithCompletion(input, self.lastLinePartial, matches[0]);
           } else if (matches.length > 1) {
             self._showAutoComplete(input, matches);
           }
@@ -84,6 +84,10 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     this._hideAutoComplete();
   }
   return true;
+};
+
+ReadLineInterface.prototype._updateValueWithCompletion = function (input, linePartial, value) {
+  input.value = input.value.replace(new RegExp(linePartial + '$'), value);
 };
 
 ReadLineInterface.prototype._isAutoCompleteVisible = function () {
