@@ -3,8 +3,10 @@
 
 var path = require('path');
 var connect = require('connect');
+
 var server = connect.createServer();
 server.use(connect.static(__dirname));
+server.use(connect.static(path.join(__dirname, '..')));
 
 var browserify = require('browserify');
 var bundle = browserify(path.join(__dirname, 'entry.js'));

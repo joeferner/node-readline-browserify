@@ -38,13 +38,22 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
   var TABKEY = 9;
   var UP = 38;
   var DOWN = 40;
-  var idx, count;
+  var ENTER = 13;
+  var idx, count, value;
   var self = this;
+  var input = document.getElementById('_readline_input');
 
-  if (e.keyCode === TABKEY) {
-    var input = document.getElementById('_readline_input');
+  if (e.keyCode === ENTER) {
+    value = this.getAutoCompleteValue();
+    if (value) {
+      this._updateValueWithCompletion(input, this.lastLinePartial, value);
+      this._hideAutoComplete();
+      return preventDefault(e);
+    }
+  }
+  else if (e.keyCode === TABKEY) {
     if (this._isAutoCompleteVisible()) {
-      var value = this.getAutoCompleteValue();
+      value = this.getAutoCompleteValue();
       if (value) {
         this._updateValueWithCompletion(input, self.lastLinePartial, value);
         this._hideAutoComplete();
@@ -100,6 +109,14 @@ ReadLineInterface.prototype._hideAutoComplete = function () {
   autocomplete.style.display = 'none';
 };
 
+ReadLineInterface.prototype._autoCompleteClick = function (elem) {
+  var input = document.getElementById('_readline_input');
+  var value = elem.getAttribute('data-value');
+  this._updateValueWithCompletion(input, this.lastLinePartial, value);
+  this._hideAutoComplete();
+  input.focus();
+};
+
 ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
   var autocomplete = document.getElementById('_readline_autocomplete');
   var html = '';
@@ -107,6 +124,10 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
     html += '<div data-value="' + match + '">' + match + "</div>";
   });
   autocomplete.innerHTML = html;
+  for (var i = 0; i < autocomplete.children.length; i++) {
+    var child = autocomplete.children[i];
+    addEvent(child, 'click', this._autoCompleteClick.bind(this, child));
+  }
   var inputLoc = getOffset(input);
   autocomplete.style.left = inputLoc.left;
   autocomplete.style.top = (inputLoc.top + input.offsetHeight) + 'px';

@@ -29,6 +29,7 @@
 
 .autocompletePopup div {
     padding: 5px;
+    cursor: pointer;
 }
 
 .autocompletePopup .selected {
