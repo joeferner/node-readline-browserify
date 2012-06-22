@@ -106,6 +106,7 @@ ReadLineInterface.prototype._isAutoCompleteVisible = function () {
 
 ReadLineInterface.prototype._hideAutoComplete = function () {
   var autocomplete = document.getElementById('_readline_autocomplete');
+  autocomplete.innerHTML = '';
   autocomplete.style.display = 'none';
 };
 
