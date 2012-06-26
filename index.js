@@ -8,6 +8,9 @@ exports.createInterface = function (options) {
 };
 
 function ReadLineInterface(options) {
+  this.history = [];
+  this._historyIdx = this.history.length;
+  this._currentInput = '';
   this._options = options;
   this._options.write = this._options.write || console.log;
   this._elem = document.getElementById(this._options.elementId);
@@ -77,19 +80,40 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     return preventDefault(e);
   } else if (e.keyCode == DOWN) {
     count = this.getAutoCompleteCount();
-    idx = this.getSelectedAutoCompleteItemIndex() + 1;
-    if (idx >= count) {
-      idx = 0;
+    if (count === 0) {
+      if (this._historyIdx <= this.history.length - 1) {
+        this._historyIdx++;
+        if (this._historyIdx >= this.history.length) {
+          input.value = this._currentInput;
+        } else {
+          input.value = this.history[this._historyIdx];
+        }
+      }
+    } else {
+      idx = this.getSelectedAutoCompleteItemIndex() + 1;
+      if (idx >= count) {
+        idx = 0;
+      }
+      this.setSelectedAutoCompleteItemIndex(idx);
     }
-    this.setSelectedAutoCompleteItemIndex(idx);
     return preventDefault(e);
   } else if (e.keyCode == UP) {
     count = this.getAutoCompleteCount();
-    idx = this.getSelectedAutoCompleteItemIndex() - 1;
-    if (idx < 0) {
-      idx = count - 1;
+    if (count === 0) {
+      if (this._historyIdx === this.history.length) {
+        this._currentInput = input.value;
+      }
+      if (this._historyIdx >= 1) {
+        this._historyIdx--;
+        input.value = this.history[this._historyIdx];
+      }
+    } else {
+      idx = this.getSelectedAutoCompleteItemIndex() - 1;
+      if (idx < 0) {
+        idx = count - 1;
+      }
+      this.setSelectedAutoCompleteItemIndex(idx);
     }
-    this.setSelectedAutoCompleteItemIndex(idx);
     return preventDefault(e);
   } else {
     this._hideAutoComplete();
@@ -177,6 +201,9 @@ ReadLineInterface.prototype.setSelectedAutoCompleteItemIndex = function (idx) {
 ReadLineInterface.prototype._onSubmit = function (e) {
   var input = document.getElementById('_readline_input');
   var line = input.value;
+  this.history.push(line);
+  this._historyIdx = this.history.length;
+  this._currentInput = '';
   this.emit("line", line);
   this.prompt();
   return preventDefault(e);
