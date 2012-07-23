@@ -64,14 +64,20 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
       }
     } else {
       if (this._options.completer) {
+        self._showWaitForCompleter(input);
         this._options.completer(input.value, function (err, matchArray) {
           if (!matchArray) {
+            self._hideAutoComplete();
             return;
           }
           var matches = matchArray[0];
           self.lastLinePartial = matchArray[1];
-          if (matches.length === 1) {
+          if (matches.length === 0) {
+            self._hideAutoComplete();
+          }
+          else if (matches.length === 1) {
             self._updateValueWithCompletion(input, self.lastLinePartial, matches[0]);
+            self._hideAutoComplete();
           } else if (matches.length > 1) {
             self._showAutoComplete(input, matches);
           }
@@ -145,6 +151,16 @@ ReadLineInterface.prototype._autoCompleteClick = function (elem) {
   input.focus();
 };
 
+ReadLineInterface.prototype._getAutoCompleteElement = function () {
+  return document.getElementById('_readline_autocomplete');
+};
+
+ReadLineInterface.prototype._showWaitForCompleter = function (input) {
+  var autocomplete = this._getAutoCompleteElement();
+  autocomplete.innerHTML = "<div>Loading...</div>";
+  this._positionAutoComplete(input);
+};
+
 ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
   var maxAutoComplete = false;
   if (matches.length > this._options.maxAutoComplete) {
@@ -152,7 +168,8 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
     maxAutoComplete = true;
   }
 
-  var autocomplete = document.getElementById('_readline_autocomplete');
+  var autocomplete = this._getAutoCompleteElement();
+  autocomplete.style.display = 'none';
   var html = '';
   matches.forEach(function (match) {
     html += '<div data-value="' + match + '">' + match + "</div>";
@@ -165,6 +182,11 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
     var child = autocomplete.children[i];
     addEvent(child, 'click', this._autoCompleteClick.bind(this, child));
   }
+  this._positionAutoComplete(input);
+};
+
+ReadLineInterface.prototype._positionAutoComplete = function (input) {
+  var autocomplete = this._getAutoCompleteElement();
   var inputLoc = getOffset(input);
   autocomplete.style.left = inputLoc.left;
   autocomplete.style.top = (inputLoc.top + input.offsetHeight) + 'px';
