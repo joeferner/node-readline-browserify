@@ -12,6 +12,7 @@ function ReadLineInterface(options) {
   this._historyIdx = this.history.length;
   this._currentInput = '';
   this._options = options;
+  this._options.maxAutoComplete = 20;
   this._options.write = this._options.write || console.log;
   this._elem = document.getElementById(this._options.elementId);
 }
@@ -145,11 +146,20 @@ ReadLineInterface.prototype._autoCompleteClick = function (elem) {
 };
 
 ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
+  var maxAutoComplete = false;
+  if (matches.length > this._options.maxAutoComplete) {
+    matches = matches.slice(0, this._options.maxAutoComplete);
+    maxAutoComplete = true;
+  }
+
   var autocomplete = document.getElementById('_readline_autocomplete');
   var html = '';
   matches.forEach(function (match) {
     html += '<div data-value="' + match + '">' + match + "</div>";
   });
+  if (maxAutoComplete) {
+    html += '<div>more...</div>';
+  }
   autocomplete.innerHTML = html;
   for (var i = 0; i < autocomplete.children.length; i++) {
     var child = autocomplete.children[i];
