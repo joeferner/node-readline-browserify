@@ -3,7 +3,7 @@
   "description": "Readline implementation for browserify.",
   "author": "Joe Ferner <joe@fernsroth.com>",
   "keywords": ["browserify", "readline"],
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "node": "*"
   },
