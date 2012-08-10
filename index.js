@@ -3,6 +3,9 @@
 var util = require("util");
 var events = require("events");
 
+var lastMatches = null;
+var shiftMode = false;
+
 exports.createInterface = function (options) {
   return new ReadLineInterface(options);
 };
@@ -13,6 +16,7 @@ function ReadLineInterface(options) {
   this._currentInput = '';
   this._options = options;
   this._options.maxAutoComplete = 20;
+  this._options.startIndex = 0;
   this._options.write = this._options.write || console.log;
   this._elem = document.getElementById(this._options.elementId);
 }
@@ -35,10 +39,12 @@ ReadLineInterface.prototype.prompt = function (preserveCursor) {
 
   var input = document.getElementById('_readline_input');
   addEvent(input, 'keydown', this._inputKeydown.bind(this));
+  addEvent(input, 'keyup', this._inputKeyup.bind(this));
   input.focus();
 };
 
 ReadLineInterface.prototype._inputKeydown = function (e) {
+  var SHIFT = 16;
   var TABKEY = 9;
   var UP = 38;
   var DOWN = 40;
@@ -50,9 +56,16 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
   if (e.keyCode === ENTER) {
     value = this.getAutoCompleteValue();
     if (value) {
-      this._updateValueWithCompletion(input, this.lastLinePartial, value);
-      this._hideAutoComplete();
-      return preventDefault(e);
+      if (value === "more"){
+        this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
+      }else if (value === "prev"){
+        this._showAutoComplete(input, lastMatches, --this._options.startIndex);
+      }else{
+        this._updateValueWithCompletion(input, this.lastLinePartial, value);
+        this._hideAutoComplete();
+        this._options.startIndex = 0;
+      }
+        return preventDefault(e);
     }
   }
   else if (e.keyCode === TABKEY) {
@@ -61,6 +74,13 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
       if (value) {
         this._updateValueWithCompletion(input, self.lastLinePartial, value);
         this._hideAutoComplete();
+        this._options.startIndex = 0;
+      } else{
+        if (shiftMode){
+          this._showAutoComplete(input, lastMatches, --this._options.startIndex);
+        } else{
+          this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
+        }
       }
     } else {
       if (this._options.completer) {
@@ -71,6 +91,7 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
             return;
           }
           var matches = matchArray[0];
+          lastMatches = matches;
           self.lastLinePartial = matchArray[1];
           if (matches.length === 0) {
             self._hideAutoComplete();
@@ -122,11 +143,21 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
       this.setSelectedAutoCompleteItemIndex(idx);
     }
     return preventDefault(e);
+  } else if (e.keyCode == SHIFT){
+    shiftMode = true;
   } else {
     this._hideAutoComplete();
+    this._options.startIndex = 0;
   }
   return true;
 };
+
+ReadLineInterface.prototype._inputKeyup = function (e) {
+  var SHIFT = 16;
+  if (e.keyCode == SHIFT){
+    shiftMode = false;
+  }
+}
 
 ReadLineInterface.prototype._updateValueWithCompletion = function (input, linePartial, value) {
   input.value = input.value.replace(new RegExp(linePartial + '$'), value);
@@ -146,8 +177,15 @@ ReadLineInterface.prototype._hideAutoComplete = function () {
 ReadLineInterface.prototype._autoCompleteClick = function (elem) {
   var input = document.getElementById('_readline_input');
   var value = elem.getAttribute('data-value');
-  this._updateValueWithCompletion(input, this.lastLinePartial, value);
-  this._hideAutoComplete();
+  if (value === "more"){
+    this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
+  }  if (value === "prev"){
+    this._showAutoComplete(input, lastMatches, --this._options.startIndex);
+  } else{
+    this._updateValueWithCompletion(input, this.lastLinePartial, value);
+    this._hideAutoComplete();
+    this._options.startIndex = 0;
+  }
   input.focus();
 };
 
@@ -161,13 +199,25 @@ ReadLineInterface.prototype._showWaitForCompleter = function (input) {
   this._positionAutoComplete(input);
 };
 
-ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
-  var maxAutoComplete = false;
-  if (matches.length > this._options.maxAutoComplete) {
-    matches = matches.slice(0, this._options.maxAutoComplete);
-    maxAutoComplete = true;
+ReadLineInterface.prototype._showAutoComplete = function (input, matches, startIndex) {
+  console.log(startIndex);
+  if (!startIndex || startIndex <0)
+  {
+    startIndex = 0;
+    this._options.startIndex = startIndex;
+  } else{
+    startIndex = startIndex * this._options.maxAutoComplete;
   }
-
+  var maxAutoComplete = false;
+  if (matches.length > this._options.maxAutoComplete + startIndex) {
+    matches = matches.slice(startIndex, startIndex + this._options.maxAutoComplete);
+    maxAutoComplete = true;
+  } else if (startIndex > 0){
+    matches = matches.slice(startIndex);
+  }
+  if (matches.length === 0 && startIndex != 0){
+      this._options.startIndex =-1;
+  }
   var autocomplete = this._getAutoCompleteElement();
   autocomplete.style.display = 'none';
   var html = '';
@@ -175,7 +225,10 @@ ReadLineInterface.prototype._showAutoComplete = function (input, matches) {
     html += '<div data-value="' + match + '">' + match + "</div>";
   });
   if (maxAutoComplete) {
-    html += '<div>more...</div>';
+    html += '<div data-value="more">more...</div>';
+  }
+  if (startIndex > 0 && matches.length != 0) {
+    html += '<div data-value="prev">prev...</div>';
   }
   autocomplete.innerHTML = html;
   for (var i = 0; i < autocomplete.children.length; i++) {
