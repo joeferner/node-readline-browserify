@@ -58,9 +58,9 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     if (value) {
       if (value === "more"){
         this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
-      }else if (value === "prev"){
+      } else if (value === "prev"){
         this._showAutoComplete(input, lastMatches, --this._options.startIndex);
-      }else{
+      } else{
         this._updateValueWithCompletion(input, this.lastLinePartial, value);
         this._hideAutoComplete();
         this._options.startIndex = 0;
@@ -72,9 +72,15 @@ ReadLineInterface.prototype._inputKeydown = function (e) {
     if (this._isAutoCompleteVisible()) {
       value = this.getAutoCompleteValue();
       if (value) {
-        this._updateValueWithCompletion(input, self.lastLinePartial, value);
-        this._hideAutoComplete();
-        this._options.startIndex = 0;
+        if (value === "more"){
+        this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
+        } else if (value === "prev"){
+        this._showAutoComplete(input, lastMatches, --this._options.startIndex);
+        } else{
+          this._updateValueWithCompletion(input, this.lastLinePartial, value);
+          this._hideAutoComplete();
+          this._options.startIndex = 0;
+        }
       } else{
         if (shiftMode){
           this._showAutoComplete(input, lastMatches, --this._options.startIndex);
@@ -179,7 +185,7 @@ ReadLineInterface.prototype._autoCompleteClick = function (elem) {
   var value = elem.getAttribute('data-value');
   if (value === "more"){
     this._showAutoComplete(input, lastMatches, ++this._options.startIndex);
-  }  if (value === "prev"){
+  } else if (value === "prev"){
     this._showAutoComplete(input, lastMatches, --this._options.startIndex);
   } else{
     this._updateValueWithCompletion(input, this.lastLinePartial, value);
