@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "browserify": "~1.12.2",
-    "connect": "~2.3.3",
+    "connect": "~3.7.0",
     "readline-browserify": "git://github.com/joeferner/node-readline-browserify.git"
   },
   "devDependencies": {},
